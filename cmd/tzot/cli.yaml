@@ -1,0 +1,38 @@
+name: tzot
+version: v0.0.0
+description: A command line tool to generate CLI for your app from YAML-based schema.
+options:
+  -help:
+    description: Shows description of this tool
+    short: -h
+    type: boolean
+  -version:
+    description: Shows version of this tool
+    short: -v
+    type: boolean
+subcommands:
+  list:
+    description: Lists of all available timezone IDs.
+    options:
+      -help:
+        description: Shows description of this subcommand.
+        short: -h
+        type: boolean
+  gen:
+    description: Generates Go code to handle timezone offset transitions for specified timezone IDs.
+    options:
+      -help:
+        description: Shows description of this subcommand.
+        short: -h
+        type: boolean
+      -package:
+        description: Specifies package that output API belongs to.
+        short: -p
+        default: tzot_gen
+      -output-path:
+        description: Specifies output path of gen subcommand. If not specified, stdout is used.
+        short: -o
+    arguments:
+      - name: "timezone_id_list"
+        description: specifies timezone IDs for which Go code is generated.
+        variadic: true

@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  work:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    volumes:
+      - ./:/workspace
+    working_dir: /workspace
+    command: [ "bash" ]
