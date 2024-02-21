@@ -6,6 +6,7 @@ import (
 	"github.com/Jumpaku/go-assert"
 	"github.com/samber/lo"
 	"slices"
+	"strings"
 	"time"
 )
 
@@ -13,11 +14,28 @@ type Zone struct {
 	ID          string
 	Transitions []Transition
 }
+
 type Transition struct {
 	When         time.Time
 	OffsetBefore time.Duration
 	OffsetAfter  time.Duration
 }
+
+func AvailableZoneIDs() []string {
+	return append([]string{}, zoneIDs...)
+}
+
+func GetZone(zoneID string) (zone Zone, found bool) {
+	zone, found = zones[zoneID]
+	return zone, found
+}
+
+func GetTZVersion() string {
+	return strings.TrimSpace(tzVersion)
+}
+
+//go:embed tz-offset-transitions/version
+var tzVersion string
 
 //go:embed tz-offset-transitions/tzot.json
 var tzotJson []byte
@@ -53,12 +71,3 @@ var zoneIDs = func() []string {
 	slices.Sort(zoneIDs)
 	return zoneIDs
 }()
-
-func AvailableZoneIDs() []string {
-	return append([]string{}, zoneIDs...)
-}
-
-func GetZone(zoneID string) (zone Zone, found bool) {
-	zone, found = zones[zoneID]
-	return zone, found
-}

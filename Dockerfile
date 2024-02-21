@@ -1,4 +1,3 @@
-FROM ubuntu
+FROM golang:1.22.0-alpine3.19
 
-RUN DEBIAN_FRONTEND=noninteractive apt update -y \
-    && DEBIAN_FRONTEND=noninteractive apt install -y curl jq
+RUN apk update && apk add curl jq make

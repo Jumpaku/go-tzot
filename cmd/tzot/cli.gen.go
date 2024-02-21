@@ -18,10 +18,10 @@ type CLI struct {
 }
 
 func (CLI) DESC_Simple() string {
-	return "tzot (v0.0.0):\nA command line tool to generate CLI for your app from YAML-based schema.\n\nUsage:\n    $ tzot [<option>]...\n\nOptions:\n    -help, -version\n\nSubcommands:\n    gen, list\n\n"
+	return "tzot:\nA command line tool to generate CLI for your app from YAML-based schema.\n\nUsage:\n    $ tzot [<option>]...\n\nOptions:\n    -help, -version\n\nSubcommands:\n    gen, list\n\n"
 }
 func (CLI) DESC_Detail() string {
-	return "tzot (v0.0.0):\nA command line tool to generate CLI for your app from YAML-based schema.\n\nUsage:\n    $ tzot [<option>]...\n\n\nOptions:\n    -help[=<boolean>], -h[=<boolean>]  (default=false):\n        Shows description of this tool\n\n    -version[=<boolean>], -v[=<boolean>]  (default=false):\n        Shows version of this tool\n\n\nSubcommands:\n    gen:\n        Generates Go code to handle timezone offset transitions for specified timezone IDs.\n\n    list:\n        Lists of all available timezone IDs.\n\n"
+	return "tzot:\nA command line tool to generate CLI for your app from YAML-based schema.\n\nUsage:\n    $ tzot [<option>]...\n\n\nOptions:\n    -help[=<boolean>], -h[=<boolean>]  (default=false):\n        Shows description of this tool\n\n    -version[=<boolean>], -v[=<boolean>]  (default=false):\n        Shows version of this tool\n\n\nSubcommands:\n    gen:\n        Generates Go code to handle timezone offset transitions for specified timezone IDs.\n\n    list:\n        Lists of all available timezone IDs.\n\n"
 }
 
 type CLI_Input struct {
@@ -84,13 +84,15 @@ type CLI_Gen struct {
 }
 
 func (CLI_Gen) DESC_Simple() string {
-	return "Generates Go code to handle timezone offset transitions for specified timezone IDs.\n\nUsage:\n    $ <program> gen [<option>|<argument>]... [-- [<argument>]...]\n\nOptions:\n    -help, -output-path, -package\n\nArguments:\n    <timezone_id_list>...\n\n"
+	return "Generates Go code to handle timezone offset transitions for specified timezone IDs.\n\nUsage:\n    $ <program> gen [<option>|<argument>]... [-- [<argument>]...]\n\nOptions:\n    -all, -help, -output-path, -package\n\nArguments:\n    <timezone_id_list>...\n\n"
 }
 func (CLI_Gen) DESC_Detail() string {
-	return "Generates Go code to handle timezone offset transitions for specified timezone IDs.\n\nUsage:\n    $ <program> gen [<option>|<argument>]... [-- [<argument>]...]\n\n\nOptions:\n    -help[=<boolean>], -h[=<boolean>]  (default=false):\n        Shows description of this subcommand.\n\n    -output-path=<string>, -o=<string>  (default=\"\"):\n        Specifies output path of gen subcommand. If not specified, stdout is used.\n\n    -package=<string>, -p=<string>  (default=\"tzot_gen\"):\n        Specifies package that output API belongs to.\n\n\nArguments:\n    [0:] [<timezone_id_list:string>]...\n        specifies timezone IDs for which Go code is generated.\n\n"
+	return "Generates Go code to handle timezone offset transitions for specified timezone IDs.\n\nUsage:\n    $ <program> gen [<option>|<argument>]... [-- [<argument>]...]\n\n\nOptions:\n    -all[=<boolean>], -a[=<boolean>]  (default=false):\n        Generates Go code for all timezone IDs if true.\n\n    -help[=<boolean>], -h[=<boolean>]  (default=false):\n        Shows description of this subcommand.\n\n    -output-path=<string>, -o=<string>  (default=\"\"):\n        Specifies output path of gen subcommand. If not specified, stdout is used.\n\n    -package=<string>, -p=<string>  (default=\"tzot_gen\"):\n        Specifies package that output API belongs to.\n\n\nArguments:\n    [0:] [<timezone_id_list:string>]...\n        specifies timezone IDs for which Go code is generated.\n\n"
 }
 
 type CLI_Gen_Input struct {
+	Opt_All bool
+
 	Opt_Help bool
 
 	Opt_OutputPath string
@@ -102,6 +104,8 @@ type CLI_Gen_Input struct {
 
 func resolve_CLI_Gen_Input(input *CLI_Gen_Input, restArgs []string) error {
 	*input = CLI_Gen_Input{
+
+		Opt_All: false,
 
 		Opt_Help: false,
 
@@ -126,6 +130,15 @@ func resolve_CLI_Gen_Input(input *CLI_Gen_Input, restArgs []string) error {
 		switch optName {
 		default:
 			return fmt.Errorf("unknown option %q", optName)
+
+		case "-all", "-a":
+			if !cut {
+				lit = "true"
+
+			}
+			if err := parseValue(&input.Opt_All, lit); err != nil {
+				return fmt.Errorf("value %q is not assignable to option %q", lit, optName)
+			}
 
 		case "-help", "-h":
 			if !cut {

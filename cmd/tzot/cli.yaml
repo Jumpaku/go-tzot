@@ -1,6 +1,5 @@
 name: tzot
-version: v0.0.0
-description: A command line tool to generate CLI for your app from YAML-based schema.
+description: A command line tool to generate API for handling timezone offset transitions based on the IANA TZ database.
 options:
   -help:
     description: Shows description of this tool
@@ -32,6 +31,10 @@ subcommands:
       -output-path:
         description: Specifies output path of gen subcommand. If not specified, stdout is used.
         short: -o
+      -all:
+        description: Generates Go code for all timezone IDs if true.
+        short: -a
+        type: boolean
     arguments:
       - name: "timezone_id_list"
         description: specifies timezone IDs for which Go code is generated.

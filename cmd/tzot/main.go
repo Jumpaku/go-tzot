@@ -25,7 +25,7 @@ func main() {
 
 func showHelp(subcommand []string, input CLI_Input, inputErr error) (err error) {
 	if input.Opt_Version && !input.Opt_Help {
-		fmt.Println("v0.0.0")
+		fmt.Println(tzot.ModuleVersion())
 		return nil
 	}
 	if input.Opt_Help {

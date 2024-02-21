@@ -10,6 +10,8 @@ import (
 )
 
 type data struct {
+	Version     string
+	TZVersion   string
 	PackageName string
 	Zones       []zoneData
 }
@@ -29,6 +31,8 @@ var executor = template.Must(template.New("tzot.gen.go.tpl").Parse(tzotGenGoTemp
 
 func Generate(packageName string, zones []tzot.Zone, writer io.Writer) error {
 	err := executor.Execute(writer, data{
+		Version:     tzot.ModuleVersion(),
+		TZVersion:   tzot.GetTZVersion(),
 		PackageName: packageName,
 		Zones: lo.Map(zones, func(zone tzot.Zone, index int) zoneData {
 			return zoneData{
