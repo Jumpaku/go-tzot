@@ -50,5 +50,5 @@ jobs:
           gh pr create \
             --base "${BASE_BRANCH}" \
             --head "${HEAD_BRANCH}" \
-            --title "Update $TZOT_PATH (${TZ_VERSION})" \
+            --title "Update tzot.json (${TZ_VERSION})" \
             --body "GitHub Actions Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
