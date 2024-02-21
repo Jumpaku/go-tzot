@@ -1,14 +1,13 @@
 name: Release
 on:
   pull_request:
-#    types:
-#      - closed
-    branches: [ "main" ]
+    types:
+      - closed
 #  workflow_dispatch:
 
 jobs:
   release_draft:
-#    if: ${{ github.event.pull_request.merged && github.head_ref == 'github-actions-update' }}
+    if: ${{ github.event.pull_request.merged && github.head_ref == 'github-actions-update' }}
     runs-on: ubuntu-latest
 
     steps:
