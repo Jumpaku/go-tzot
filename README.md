@@ -124,7 +124,7 @@ Arguments:
 #### tzot list
 
 ```
-Lists of all available timezone IDs.
+Lists all available timezone IDs.
 
 Usage:
     $ <program> list [<option>]...
