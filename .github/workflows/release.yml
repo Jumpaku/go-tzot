@@ -1,0 +1,31 @@
+name: Release
+on:
+  pull_request:
+#    types:
+#      - closed
+    branches: [ "main" ]
+#  workflow_dispatch:
+
+jobs:
+  release_draft:
+#    if: ${{ github.event.pull_request.merged && github.head_ref == 'github-actions-update' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: TZ version
+        run: |
+          set -eux
+          echo "NEW_TAG=$(cat version.txt)" >> "${GITHUB_ENV}"
+          echo "TZ_VERSION=$(cat tz-offset-transitions/version)" >> "${GITHUB_ENV}"
+      - name: Create tag
+        run: |
+          set -eux
+          git config --global user.name 'GitHub Actions Release'
+          git config --global user.email 'github.actions.release@example.com'
+          git tag -a -m "Update (${TZ_VERSION})" "${NEW_TAG}"
+          git push --tags
+      - name: Draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create --draft --latest --generate-notes --title "${NEW_TAG}" "${NEW_TAG}"
