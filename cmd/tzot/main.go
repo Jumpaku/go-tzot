@@ -75,7 +75,11 @@ func generateAPI(subcommand []string, input CLI_Gen_Input, inputErr error) (err 
 	}
 
 	zones := []tzot.Zone{}
-	for _, zoneID := range input.Arg_TimezoneIdList {
+	zoneIDs := input.Arg_TimezoneIdList
+	if input.Opt_All {
+		zoneIDs = tzot.AvailableZoneIDs()
+	}
+	for _, zoneID := range zoneIDs {
 		zone, found := tzot.GetZone(zoneID)
 		if !found {
 			log.Panicf("zone %q is not available", zoneID)
