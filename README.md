@@ -47,6 +47,7 @@ import (
 type Zone struct {
 	ID          string
 	Transitions []Transition
+	Rule        []Rule
 }
 
 type Transition struct {
@@ -55,11 +56,28 @@ type Transition struct {
 	OffsetAfter  time.Duration
 }
 
+type Rule struct {
+	RuleType          RuleType
+	OffsetBefore      time.Duration
+	OffsetAfter       time.Duration
+	Month             time.Month
+	TimeOffset        time.Duration
+	TimeHour          int
+	TimeMinute        int
+	TimeSecond        int
+	DayOfWeek         time.Weekday
+	MonthDays         int
+	MonthDaysFromLast int
+}
+
+type RuleType string
+
 func GetTZVersion() string
 
 func AvailableZoneIDs() []string
 
 func GetZone(zoneID string) Zone
+
 ```
 
 
@@ -78,7 +96,7 @@ go install "github.com/Jumpaku/go-tzot@latest"
 ```go
 package main
 
-//go:generate go run "github.com/Jumpaku/go-tzot/cmd/tzot" gen -package=examples -output-path=tzot.go Asia/Tokyo Pacific/Pago_Pago Europe/Zurich Zulu
+//go:generate go run "github.com/Jumpaku/go-tzot/cmd/tzot" gen -package=examples -output-path=tzot.go Asia/Tokyo Pacific/Apia Europe/Zurich Zulu
 ```
 
 ```shell

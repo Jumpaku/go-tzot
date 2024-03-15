@@ -17,6 +17,17 @@ subcommands:
         description: Shows description of this subcommand.
         short: -h
         type: boolean
+  fetch:
+    description: Fetches timezones as JSON formats.
+    options:
+      -help:
+        description: Shows description of this subcommand.
+        short: -h
+        type: boolean
+    arguments:
+      - name: "timezone_id_list"
+        description: Specifies timezone IDs to get.
+        variadic: true
   gen:
     description: Generates Go code to handle timezone offset transitions for specified timezone IDs.
     options:
@@ -37,5 +48,5 @@ subcommands:
         type: boolean
     arguments:
       - name: "timezone_id_list"
-        description: specifies timezone IDs for which Go code is generated.
+        description: Specifies timezone IDs for which Go code is generated.
         variadic: true

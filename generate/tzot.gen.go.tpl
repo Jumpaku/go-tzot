@@ -11,12 +11,36 @@ import (
 type Zone struct {
 	ID          string
 	Transitions []Transition
+	Rules       []Rule
 }
 
 type Transition struct {
 	When         time.Time
 	OffsetBefore time.Duration
 	OffsetAfter  time.Duration
+}
+
+type RuleType string
+
+const (
+	RuleTypeWeekDayPositive  RuleType = "net.jumpaku.tzot.Rule.WeekDayPositive"
+	RuleTypeWeekDayNegative  RuleType = "net.jumpaku.tzot.Rule.WeekDayNegative"
+	RuleTypeMonthDayPositive RuleType = "net.jumpaku.tzot.Rule.MonthDayPositive"
+	RuleTypeMonthDayNegative RuleType = "net.jumpaku.tzot.Rule.MonthDayNegative"
+)
+
+type Rule struct {
+	RuleType          RuleType
+	OffsetBefore      time.Duration
+	OffsetAfter       time.Duration
+	Month             time.Month
+	TimeOffset        time.Duration
+	TimeHour          int
+	TimeMinute        int
+	TimeSecond        int
+	DayOfWeek         time.Weekday
+	MonthDays         int
+	MonthDaysFromLast int
 }
 
 func AvailableZoneIDs() []string {
@@ -49,6 +73,22 @@ var zones = map[string]Zone{
 				When:         time.Unix({{$Transition.WhenUnix}}, 0),
 				OffsetBefore: {{$Transition.OffsetBeforeNano}},
 				OffsetAfter:  {{$Transition.OffsetAfterNano}},
+			},
+			{{end}}
+		},
+		Rules: []Rule{
+			{{range $Index, $Rule := $Zone.Rules}}{
+				RuleType:          {{$Rule.RuleType}},
+				OffsetBefore:      {{$Rule.OffsetBeforeNano}},
+				OffsetAfter:       {{$Rule.OffsetAfterNano}},
+				Month:             {{$Rule.Month}},
+				TimeOffset:        {{$Rule.TimeOffsetNano}},
+				TimeHour:          {{$Rule.TimeHour}},
+				TimeMinute:        {{$Rule.TimeMinute}},
+				TimeSecond:        {{$Rule.TimeSecond}},
+				DayOfWeek:         {{$Rule.DayOfWeek}},
+				MonthDays:         {{$Rule.MonthDays}},
+				MonthDaysFromLast: {{$Rule.MonthDaysFromLast}},
 			},
 			{{end}}
 		},

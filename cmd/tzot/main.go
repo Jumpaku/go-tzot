@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/Jumpaku/go-tzot"
 	"github.com/Jumpaku/go-tzot/generate"
@@ -16,6 +17,7 @@ func main() {
 	// Overwrite behaviors
 	cli.FUNC = showHelp
 	cli.List.FUNC = listZoneIDs
+	cli.Fetch.FUNC = fetchZones
 	cli.Gen.FUNC = generateAPI
 	// Run with command line arguments
 	if err := Run(cli, os.Args); err != nil {
@@ -52,6 +54,32 @@ func listZoneIDs(subcommand []string, input CLI_List_Input, inputErr error) (err
 	for _, zoneID := range tzot.AvailableZoneIDs() {
 		fmt.Println(zoneID)
 	}
+	return nil
+}
+
+func fetchZones(subcommand []string, input CLI_Fetch_Input, inputErr error) (err error) {
+	if input.Opt_Help {
+		fmt.Println(cli.List.DESC_Detail())
+		return nil
+	}
+	if inputErr != nil {
+		fmt.Fprintln(os.Stderr, cli.List.DESC_Simple())
+		log.Panicf("input error: %+v", inputErr)
+	}
+
+	zoneIDs := input.Arg_TimezoneIdList
+	for _, zoneID := range zoneIDs {
+		zone, found := tzot.GetZone(zoneID)
+		if !found {
+			log.Panicf("zone %q is not available", zoneID)
+		}
+		j, err := json.Marshal(zone)
+		if err != nil {
+			log.Panicf("failed to marshal zone %q as a JSON value: %+v", zoneID, err)
+		}
+		fmt.Println(string(j))
+	}
+
 	return nil
 }
 

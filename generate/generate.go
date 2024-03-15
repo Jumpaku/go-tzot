@@ -18,11 +18,25 @@ type data struct {
 type zoneData struct {
 	IDLiteral   string
 	Transitions []transitionData
+	Rules       []ruleData
 }
 type transitionData struct {
 	WhenUnix         int64
 	OffsetBeforeNano int64
 	OffsetAfterNano  int64
+}
+type ruleData struct {
+	RuleType          string
+	OffsetBeforeNano  int64
+	OffsetAfterNano   int64
+	Month             int
+	TimeOffsetNano    int64
+	TimeHour          int
+	TimeMinute        int
+	TimeSecond        int
+	DayOfWeek         int
+	MonthDays         int
+	MonthDaysFromLast int
 }
 
 //go:embed tzot.gen.go.tpl
@@ -42,6 +56,21 @@ func Generate(packageName string, zones []tzot.Zone, writer io.Writer) error {
 						WhenUnix:         transition.When.Unix(),
 						OffsetBeforeNano: transition.OffsetBefore.Nanoseconds(),
 						OffsetAfterNano:  transition.OffsetAfter.Nanoseconds(),
+					}
+				}),
+				Rules: lo.Map(zone.Rules, func(rule tzot.Rule, index int) ruleData {
+					return ruleData{
+						RuleType:          fmt.Sprintf(`%q`, rule.RuleType),
+						OffsetBeforeNano:  rule.OffsetBefore.Nanoseconds(),
+						OffsetAfterNano:   rule.OffsetAfter.Nanoseconds(),
+						Month:             int(rule.Month),
+						TimeOffsetNano:    rule.TimeOffset.Nanoseconds(),
+						TimeHour:          rule.TimeHour,
+						TimeMinute:        rule.TimeMinute,
+						TimeSecond:        rule.TimeSecond,
+						DayOfWeek:         int(rule.DayOfWeek),
+						MonthDays:         rule.MonthDays,
+						MonthDaysFromLast: rule.MonthDaysFromLast,
 					}
 				}),
 			}
